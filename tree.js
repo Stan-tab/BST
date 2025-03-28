@@ -136,6 +136,30 @@ class Tree {
 		smallest[1].left = nodes[1].left;
 		nodes[0] ? (nodes[0][side] = smallest[1]) : (this.root = smallest[1]);
 	};
+
+	depth(value = null, getArray = false) {
+		const q = [{ node: this.root, height: 0 }];
+		for (let i = 0; i < q.length; i++) {
+			if (q[i].node.value === value) return q[i].height;
+			if (q[i].node.left)
+				q.push({ node: q[i].node.left, height: q[i].height + 1 });
+			if (q[i].node.right)
+				q.push({ node: q[i].node.right, height: q[i].height + 1 });
+		}
+		return getArray ? q : q.at(-1).height;
+	}
+
+	height(value = null) {
+		const arr = this.depth(null, true);
+		let height = 0;
+		for (let i = 0; i < arr.length; i++) {
+			if (value === arr[i].node.value) {
+				height = arr[i].height;
+				break;
+			}
+		}
+		return (arr.at(-1).height - height);
+	}
 }
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -153,9 +177,11 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 
 const arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const myTree = new Tree(arr);
-myTree.delete(8);
-myTree.delete(9);
-myTree.delete(23);
+console.log(myTree.height(5));
+console.log(myTree.depth(5));
+// myTree.delete(8);
+// myTree.delete(9);
+// myTree.delete(23);
 // console.log(myTree.root);
-prettyPrint(myTree.root);
+// prettyPrint(myTree.root);
 // myTree.preOrder((e) => console.log(e.value));
