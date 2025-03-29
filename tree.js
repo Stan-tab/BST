@@ -137,28 +137,49 @@ class Tree {
 		nodes[0] ? (nodes[0][side] = smallest[1]) : (this.root = smallest[1]);
 	};
 
-	depth(value = null, getArray = false) {
-		const q = [{ node: this.root, height: 0 }];
+	depth(value = null) {
+		const q = [{ node: this.root, depth: 0 }];
 		for (let i = 0; i < q.length; i++) {
-			if (q[i].node.value === value) return q[i].height;
+			if (q[i].node.value === value) return q[i].depth;
+			if (q[i].node.left)
+				q.push({ node: q[i].node.left, depth: q[i].depth + 1 });
+			if (q[i].node.right)
+				q.push({ node: q[i].node.right, depth: q[i].depth + 1 });
+		}
+		return getArray ? q : q.at(-1).depth;
+	}
+
+	height(value = null) {
+		const q = [{ node: this.find(value), height: 0 }];
+		if (!value) q[0].node = this.root;
+		for (let i = 0; i < q.length; i++) {
 			if (q[i].node.left)
 				q.push({ node: q[i].node.left, height: q[i].height + 1 });
 			if (q[i].node.right)
 				q.push({ node: q[i].node.right, height: q[i].height + 1 });
 		}
-		return getArray ? q : q.at(-1).height;
+		return q.at(-1).height;
 	}
 
-	height(value = null) {
-		const arr = this.depth(null, true);
-		let height = 0;
-		for (let i = 0; i < arr.length; i++) {
-			if (value === arr[i].node.value) {
-				height = arr[i].height;
-				break;
+	isBalanced() {
+		let left = 0;
+		let right = 0;
+		if (!this.root) return true;
+		const q = [this.root];
+		for (let i = 0; i < q.length; i++) {
+			if (q[i].left) {
+				q.push(q[i].left);
+				left = this.height(q[i].left.value) + 1;
 			}
+			if (q[i].right) {
+				q.push(q[i].right);
+				right = this.height(q[i].right.value) + 1;
+			}
+			if (Math.abs(left - right) > 1) return false;
+			left = 0;
+			right = 0;
 		}
-		return (arr.at(-1).height - height);
+		return true;
 	}
 }
 
@@ -177,11 +198,14 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 
 const arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const myTree = new Tree(arr);
-console.log(myTree.height(5));
-console.log(myTree.depth(5));
-// myTree.delete(8);
+// console.log(myTree.height(5));
+myTree.delete(8);
 // myTree.delete(9);
+// myTree.delete(6345);
 // myTree.delete(23);
 // console.log(myTree.root);
-// prettyPrint(myTree.root);
+prettyPrint(myTree.root);
+console.log(myTree.isBalanced());
+// console.log(myTree.height(67));
+// console.log(myTree.height(4));
 // myTree.preOrder((e) => console.log(e.value));
