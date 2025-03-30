@@ -66,16 +66,6 @@ class Tree {
 		return s === "u" ? curRoot : [prev, curRoot];
 	}
 
-	preOrder(fn) {
-		if (this.root === null) return;
-		const q = [this.root];
-		for (let i = 0; i < q.length; i++) {
-			fn(q[i]);
-			if (q[i].left !== null) q.push(q[i].left);
-			if (q[i].left !== null) q.push(q[i].left);
-		}
-	}
-
 	insert(value) {
 		let curNode = this.root;
 		while (1) {
@@ -181,6 +171,20 @@ class Tree {
 		}
 		return true;
 	}
+
+	inOrder(fn) {
+		function findLeft(root) {
+			const q = [root];
+			for (let i = 0; i < q.length; i++) if (q[i].left) q.push(q[i].left);
+			return q;
+		}
+		const q = findLeft(this.root);
+		for (let i = 1; i <= q.length; i++) {
+			const node = q.at(q.length - i);
+			fn(node.value);
+			if (node.right) q.splice(q.length - i, 0, ...findLeft(node.right));
+		}
+	}
 }
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -198,8 +202,9 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 
 const arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const myTree = new Tree(arr);
+myTree.inOrder(e => console.log(e));
 // console.log(myTree.height(5));
-myTree.delete(8);
+// myTree.delete(8);
 // myTree.delete(9);
 // myTree.delete(6345);
 // myTree.delete(23);
@@ -208,4 +213,3 @@ prettyPrint(myTree.root);
 console.log(myTree.isBalanced());
 // console.log(myTree.height(67));
 // console.log(myTree.height(4));
-// myTree.preOrder((e) => console.log(e.value));
