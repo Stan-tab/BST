@@ -181,7 +181,7 @@ class Tree {
 		const q = findLeft(this.root);
 		for (let i = 1; i <= q.length; i++) {
 			const node = q.at(q.length - i);
-			fn(node.value);
+			fn(node);
 			if (node.right) q.splice(q.length - i, 0, ...findLeft(node.right));
 		}
 	}
@@ -196,7 +196,7 @@ class Tree {
 		for (let j = 0; j < q.length; j++) {
 			const el = q[j];
 			for (let i = 0; i < el.length; i++) {
-				fn(el[i].value);
+				fn(el[i]);
 				if (el.at(i).right)
 					q.splice(j + 1, 0, findLeft(el.at(i).right));
 			}
@@ -207,7 +207,7 @@ class Tree {
 		function findLeft(root) {
 			const q = [root];
 			for (let i = 1; i <= q.length; i++)
-				if (q.at(- i).left) q.unshift(q.at(- i).left);
+				if (q.at(-i).left) q.unshift(q.at(-i).left);
 			return q;
 		}
 		const q = findLeft(this.root);
@@ -223,8 +223,14 @@ class Tree {
 			}
 		}
 		for (let i = 0; i < q.length; i++) {
-			fn(q[i].value);
+			fn(q[i]);
 		}
+	}
+
+	rebalance() {
+		const newArr = [];
+		this.inOrder((e) => newArr.push(e.value));
+		this.root = this.buildTree(newArr);
 	}
 }
 
@@ -245,14 +251,16 @@ const arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const myTree = new Tree(arr);
 // myTree.inOrder(e => console.log(e));
 // myTree.preOrder((e) => console.log(e));
-myTree.postOrder(e => console.log(e));
+// myTree.postOrder((e) => console.log(e));
 // console.log(myTree.height(5));
-// myTree.delete(8);
-// myTree.delete(9);
-// myTree.delete(6345);
-// myTree.delete(23);
+myTree.delete(8);
+myTree.delete(9);
+myTree.delete(6345);
+myTree.delete(23);
 // console.log(myTree.root);
-prettyPrint(myTree.root);
-console.log(myTree.isBalanced());
+// prettyPrint(myTree.root);
+// myTree.rebalance();
+// prettyPrint(myTree.root);
+// console.log(myTree.isBalanced());
 // console.log(myTree.height(67));
 // console.log(myTree.height(4));
