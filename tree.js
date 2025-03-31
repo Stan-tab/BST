@@ -185,6 +185,23 @@ class Tree {
 			if (node.right) q.splice(q.length - i, 0, ...findLeft(node.right));
 		}
 	}
+
+	preOrder(fn) {
+		function findLeft(root) {
+			const q = [root];
+			for (let i = 0; i < q.length; i++) if (q[i].left) q.push(q[i].left);
+			return q;
+		}
+		const q = [findLeft(this.root)];
+		for (let j = 0; j < q.length; j++) {
+			const el = q[j];
+			for (let i = 0; i < el.length; i++) {
+				fn(el[i].value);
+				if (el.at(i).right)
+					q.splice(j + 1, 0, findLeft(el.at(i).right));
+			}
+		}
+	}
 }
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -202,7 +219,8 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 
 const arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const myTree = new Tree(arr);
-myTree.inOrder(e => console.log(e));
+// myTree.inOrder(e => console.log(e));
+myTree.preOrder((e) => console.log(e));
 // console.log(myTree.height(5));
 // myTree.delete(8);
 // myTree.delete(9);
